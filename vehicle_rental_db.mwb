@@ -1,0 +1,118 @@
+create database vehicle_rental_db;
+USE vehicle_rental_db;
+
+CREATE TABLE customers( 
+customer_id INT PRIMARY KEY,
+full_name VARCHAR(25),
+phone INT,
+email VARCHAR(25),
+address VARCHAR(100),
+license_number INT UNIQUE,
+created_at INT );
+
+CREATE TABLE vehicles(
+vehicle_id INT PRIMARY KEY,
+vehicle_number INT UNIQUE,
+vehicle_type varchar(10),
+brand varchar(10),
+model varchar(10),
+year int,
+rent_per_day int,
+status varchar(10)
+);
+
+CREATE TABLE rentals(
+rental_id int primary key,
+customer_id int,
+vehicle_id int,
+booking_date int,
+pickup_date int,
+return_date int,
+actual_return_date int,
+total_days int,
+rent_amount int,
+late_fee int,
+total_amount int,
+rental_status varchar(10)
+);
+
+CREATE TABLE payments(
+payment_id INT PRIMARY key,
+rental_id int,
+payment_date int,
+amount int,
+payment_method varchar(10),
+payment_status varchar(10)
+);
+
+CREATE TABLE maintenance(
+maintenance_id int primary key,
+vehicle_id int,
+service_date int,
+description varchar(50),
+cost int,
+status varchar(10)
+);
+
+ALTER TABLE customers MODIFY phone VARCHAR(15);
+ALTER TABLE customers MODIFY license_number varchar(10) UNIQUE;
+ALTER TABLE customers MODIFY customer_id INT NOT NULL AUTO_INCREMENT;
+ALTER TABLE vehicles  MODIFY vehicle_number varchar (25) UNIQUE;
+ALTER TABLE maintenance MODIFY maintenance_id int auto_increment;
+ALTER TABLE maintenance MODIFY status varchar(100);
+
+ALTER TABLE rentals
+MODIFY rental_id INT NOT NULL AUTO_INCREMENT;
+
+
+ALTER TABLE vehicles
+MODIFY vehicle_id INT NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE payments
+MODIFY payment_id int auto_increment;
+
+ALTER TABLE payments
+DROP FOREIGN KEY fk_payment_rental;
+
+ALTER TABLE rentals
+MODIFY booking_date DATE,
+MODIFY pickup_date DATE,
+MODIFY return_date DATE,
+MODIFY actual_return_date DATE;
+
+ALTER TABLE maintenance
+MODIFY service_date DATE;
+
+-- 1. rentals → customers
+ALTER TABLE rentals
+ADD CONSTRAINT fk_rental_customer
+FOREIGN KEY (customer_id)
+REFERENCES customers(customer_id);
+
+-- 2. rentals → vehicles
+ALTER TABLE rentals
+ADD CONSTRAINT fk_rental_vehicle
+FOREIGN KEY (vehicle_id)
+REFERENCES vehicles(vehicle_id);
+
+-- 3. payments → rentals
+ALTER TABLE payments
+ADD CONSTRAINT fk_payment_rental
+FOREIGN KEY (rental_id)
+REFERENCES rentals(rental_id);
+
+-- 4. maintenance → vehicles
+ALTER TABLE maintenance
+ADD CONSTRAINT fk_maintenance_vehicle
+FOREIGN KEY (vehicle_id)
+REFERENCES vehicles(vehicle_id);
+
+select * from customers;
+DESCRIBE maintenance;
+
+
+ALTER TABLE vehicles
+MODIFY status VARCHAR(20);
+
+
+DESCRIBE vehicles;
